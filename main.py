@@ -11,8 +11,10 @@ def PrimeList(N):
     max_factor = int(N ** 0.5)
     for i in range(2, max_factor + 1):
         if sieve[i]:
-            # 标记i的倍数：从i*2开始（避免i*i超出范围的情况）
-            sieve[i*2 : N : i] = [False] * len(sieve[i*2 : N : i])
+            # 更高效的标记方式：使用切片但不创建临时列表
+            # 从i*i开始标记（i*2到i*(i-1)已经被更小的质数标记过了）
+            start = i * i
+            sieve[start : N : i] = [False] * ((N - 1 - start) // i + 1)
     
     # 提取质数（仅保留≥2的数）
     primes = []
