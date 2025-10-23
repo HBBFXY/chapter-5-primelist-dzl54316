@@ -1,19 +1,24 @@
 def PrimeList(N):
-    # 处理N≤2的情况：无小于N的质数
+    # 处理所有小于2的情况，直接返回空字符串
     if N <= 2:
         return ""
     
-    # 初始化筛子：index对应数字，True表示是质数
+    # 初始化筛子：确保0和1被标记为非质数
     sieve = [True] * N
-    sieve[0] = sieve[1] = False  # 明确排除0和1
+    sieve[0], sieve[1] = False, False
     
-    # 埃拉托斯特尼筛法：遍历到√N即可
-    for i in range(2, int(N ** 0.5) + 1):
+    # 埃拉托斯特尼筛法：循环到int(N**0.5)的整数部分
+    max_factor = int(N ** 0.5)
+    for i in range(2, max_factor + 1):
         if sieve[i]:
-            # 标记i的倍数（从i²开始，避免重复标记）
-            sieve[i*i : N : i] = [False] * len(sieve[i*i : N : i])
+            # 标记i的倍数：从i*2开始（避免i*i超出范围的情况）
+            sieve[i*2 : N : i] = [False] * len(sieve[i*2 : N : i])
     
-    # 提取所有质数（确保不包含1）
-    primes = [str(num) for num, is_prime in enumerate(sieve) if is_prime and num >= 2]
-    # 拼接为空格分隔的字符串（末尾无空格）
-    return " ".join(primes)
+    # 提取质数（仅保留≥2的数）
+    primes = []
+    for num in range(2, N):
+        if sieve[num]:
+            primes.append(str(num))
+    
+    # 拼接为字符串：若为空则返回空字符串，否则无末尾空格
+    return " ".join(primes) if primes else ""
